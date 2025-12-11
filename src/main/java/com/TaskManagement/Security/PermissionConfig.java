@@ -1,5 +1,8 @@
-package com.TaskManagement.Security;
 
+
+package com.TaskManagement.Security;
+import com.TaskManagement.Enum.Permission;
+import com.TaskManagement.Enum.Role;
 import com.TaskManagement.Enum.Permission;
 import com.TaskManagement.Enum.Role;
 import org.springframework.context.annotation.Configuration;
@@ -38,3 +41,5 @@ public class PermissionConfig {
         return map;
     }
 }
+
+

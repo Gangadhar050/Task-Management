@@ -10,5 +10,7 @@ public interface CloudinaryStorageService {
     byte[]read(String storagepath);
 
     String extractFileName(String storagepath);
+
+    void delete(String publicId);
 //    String store(MultipartFile file, String folder);
 }

@@ -9,4 +9,5 @@ public enum Permission {
     COMMENT_ADD,
     COMMENT_DELETE,
     USER_MANAGE
+
 }

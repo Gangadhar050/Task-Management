@@ -34,9 +34,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PermissionConfig permissionConfig;
 
-//    @Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder =new BCryptPasswordEncoder();
-@Override
+    public UserServiceImpl(JWTUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
+    @Override
     public UserAuthResponseDTO register(UserRegisterRequestDTO request) {
         Optional<User> existing = userRepository.findByUserEmail(request.getUserEmail());
         if (existing.isPresent()) {
@@ -80,3 +82,4 @@ public void deleteUser(User user, Long id){
     }
 
 }
+

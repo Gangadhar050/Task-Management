@@ -32,7 +32,7 @@ public class UserAuthenticationConroller {
                          //OR
     @PostMapping("/register")
       public ResponseEntity<String>register(@RequestBody UserRegisterRequestDTO dto) {
-      
+
         logger.info("📩 Register Request Received: userName={}, userEmail={}, role={}",
                 dto.getUserName(), dto.getUserEmail(), dto.getRole());
 
@@ -47,12 +47,12 @@ public class UserAuthenticationConroller {
         return ResponseEntity.ok(new UserAuthResponseDTO(logined));
     }
 
-    @PutMapping("/updateUser")
+    @PutMapping("/updateUser/{id}")
     public ResponseEntity<User>updateUser(@PathVariable Long id, @RequestParam Role role){
         return ResponseEntity.ok(userService.updateRole(id, role));
     }
 
-    @DeleteMapping("/deleteUser")
+    @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<?>deleteUser(@PathVariable Long id,@RequestBody User user){
         userService.deleteUser(user, id);
         return ResponseEntity.ok("User Deleted Succesfully");
@@ -64,3 +64,4 @@ public class UserAuthenticationConroller {
 
     }
 }
+
