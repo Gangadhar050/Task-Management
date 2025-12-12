@@ -1,5 +1,7 @@
 package com.TaskManagement.ServiceIMPL;
 
+import com.TaskManagement.Service.AttachmentService;
+import com.TaskManagement.Service.CloudinaryStorageService;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class CloudinaryStorageServiceImpl {
+public class CloudinaryStorageServiceImpl implements CloudinaryStorageService {
 
     @Autowired
     private Cloudinary cloudinary;
@@ -27,6 +29,7 @@ public class CloudinaryStorageServiceImpl {
         this.cloudinary = cloudinary;
     }
 
+    @Override
     public String store(MultipartFile file, String folder) {
 
         try {
@@ -40,7 +43,7 @@ public class CloudinaryStorageServiceImpl {
 
         }
     }
-
+    @Override
     public byte[]read(String storagepath){
         try{
             URL url =new URL(storagepath);
@@ -61,13 +64,12 @@ public class CloudinaryStorageServiceImpl {
 
         }
     }
+    @Override
     public String extractFileName(String storagepath){
         return storagepath.substring(storagepath.lastIndexOf("X")+1);
     }
 
-//    public void delete(String publicId){
-//        return cloudinary.uploader(publicId);
-//    }
+
 }
 
 

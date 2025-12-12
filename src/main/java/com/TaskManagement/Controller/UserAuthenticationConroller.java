@@ -29,10 +29,10 @@ public class UserAuthenticationConroller {
 //        UserAuthResponseDTO registered = userAuthenticateService.register(dto);
 //        return ResponseEntity.ok(registered) ;
 //    }
-                         //OR
+    //OR
     @PostMapping("/register")
-      public ResponseEntity<String>register(@RequestBody UserRegisterRequestDTO dto) {
-      
+    public ResponseEntity<String>register(@RequestBody UserRegisterRequestDTO dto) {
+
         logger.info("📩 Register Request Received: userName={}, userEmail={}, role={}",
                 dto.getUserName(), dto.getUserEmail(), dto.getRole());
 
@@ -40,27 +40,28 @@ public class UserAuthenticationConroller {
         logger.info("✅ Registration successful for user: {}", dto.getUserEmail());
 
         return ResponseEntity.ok("Registred Successfuly"+registered);
-     }
+    }
     @PostMapping("/login")
     public ResponseEntity<UserAuthResponseDTO>login(@RequestBody LoginRequestDTO requestDTO){
         String logined = userService.login(requestDTO);
         return ResponseEntity.ok(new UserAuthResponseDTO(logined));
     }
 
-    @PutMapping("/updateUser")
+    @PutMapping("/updateUser/{id}")
     public ResponseEntity<User>updateUser(@PathVariable Long id, @RequestParam Role role){
         return ResponseEntity.ok(userService.updateRole(id, role));
     }
 
-    @DeleteMapping("/deleteUser")
+    @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<?>deleteUser(@PathVariable Long id,@RequestBody User user){
         userService.deleteUser(user, id);
         return ResponseEntity.ok("User Deleted Succesfully");
     }
 
     @GetMapping("/working")
-     public ResponseEntity<String>welcome(){
+    public ResponseEntity<String>welcome(){
         return ResponseEntity.ok("Authentication Working Fine");
 
     }
 }
+
