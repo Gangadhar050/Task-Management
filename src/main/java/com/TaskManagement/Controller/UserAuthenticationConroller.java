@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -24,10 +26,10 @@ public class UserAuthenticationConroller {
     private static final Logger logger = (Logger) LoggerFactory.getLogger(UserAuthenticationConroller.class);
 
 
-    //    @PostMapping("/register")
+//        @PostMapping("/register")
 //    public ResponseEntity<UserAuthResponseDTO>register(@RequestBody UserRegisterRequestDTO dto){
-//        UserAuthResponseDTO registered = userAuthenticateService.register(dto);
-//        return ResponseEntity.ok(registered) ;
+//        UserAuthResponseDTO registered = userService.register(dto);
+//        return ResponseEntity.ok(registered);
 //    }
     //OR
     @PostMapping("/register")
@@ -47,10 +49,19 @@ public class UserAuthenticationConroller {
         return ResponseEntity.ok(new UserAuthResponseDTO(logined));
     }
 
-    @PutMapping("/updateUser/{id}")
-    public ResponseEntity<User>updateUser(@PathVariable Long id, @RequestParam Role role){
-        return ResponseEntity.ok(userService.updateRole(id, role));
-    }
+//      @PutMapping("/updateUser/{id}")
+//    public ResponseEntity<User>updateUser(@PathVariable Long id, @RequestParam Role role){
+//        return ResponseEntity.ok(userService.updateRole(id, role));
+//    }
+@PutMapping("/updateUser/{id}")
+public ResponseEntity<User> updateUser(
+        @PathVariable Long id,
+        @RequestBody Map<String, String> request) {
+
+    Role role = Role.valueOf(request.get("role"));
+    return ResponseEntity.ok(userService.updateRole(id, role));
+}
+
 
     @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<?>deleteUser(@PathVariable Long id,@RequestBody User user){

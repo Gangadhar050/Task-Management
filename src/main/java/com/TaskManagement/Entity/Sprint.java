@@ -24,6 +24,9 @@ public class Sprint {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
+    private Long projectId;
+
+
     @Enumerated(EnumType.STRING)
     private SprintState state=SprintState.PLANNED;
 

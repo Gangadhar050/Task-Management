@@ -35,6 +35,8 @@ public class PermissionConfig {
         map.put(Role.TESTER,new HashSet<>(Arrays.asList(Permission.ISSUE_VIEW,
                                                         Permission.COMMENT_ADD )));
 
+        map.put(Role.USER,new HashSet<>(Arrays.asList(Permission.ISSUE_VIEW)));
+
         return map;
     }
 }

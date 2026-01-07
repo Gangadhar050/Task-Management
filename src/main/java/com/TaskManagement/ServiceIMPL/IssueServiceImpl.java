@@ -1,16 +1,19 @@
 package com.TaskManagement.ServiceIMPL;
 
+import com.TaskManagement.Client.UserClient;
 import com.TaskManagement.DTO.IssueDTO;
 import com.TaskManagement.Entity.Issue;
 import com.TaskManagement.Entity.IssueComment;
 import com.TaskManagement.Entity.Label;
 import com.TaskManagement.Entity.Sprint;
 import com.TaskManagement.Enum.IssueStatus;
+import com.TaskManagement.Enum.Role;
 import com.TaskManagement.Repository.IssueCommentRepository;
 import com.TaskManagement.Repository.IssueRepository;
 import com.TaskManagement.Repository.LabelRepository;
 import com.TaskManagement.Repository.SprintRepository;
 import com.TaskManagement.Service.IssueService;
+import com.TaskManagement.Service.WorkFlowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +41,12 @@ public class IssueServiceImpl implements IssueService {
 
     @Autowired
     private IssueCommentRepository issueCommentRepository;
+
+    @Autowired
+    public WorkFlowService workFlowService;
+
+    @Autowired
+    private UserClient userClient;
 
     private String generateKey(Long id) {
         return "PROJ-"+id;
@@ -77,11 +87,11 @@ public class IssueServiceImpl implements IssueService {
         // 🟢 Step 3: Save once (temporary key ensures no null)
         Issue savedIssue = issueRepository.save(issue);
 
-        // 🟢 Step 4: Generate real issue key and update
+        // Step 4: Generate real issue key and update
         savedIssue.setIssueKey(generateKey(savedIssue.getId()));
         Issue updatedIssue = issueRepository.save(savedIssue);
 
-        // 🟢 Step 5: Return DTO
+        //Step 5: Return DTO
         return toDTO(updatedIssue);
     }
     @Override
@@ -131,34 +141,28 @@ public class IssueServiceImpl implements IssueService {
         return comment;
     }
 
-//                  OR
-
-    // 1. Find the issue
-//    Issue issue = issueRepository.findById(issueId)
-//            .orElseThrow(() -> new RuntimeException("Issue not found"));
-//
-//    // 2. Update issue status
-//    issue.setIssueStatus(status);
-//    issue.setUpdatedAt(LocalDateTime.now());
-//    issueRepository.save(issue);
-//
-//    // 3. Create and save comment
-//    IssueComment comment = new IssueComment();
-//    comment.setIssueId(issueId);
-//    comment.setAuthorEmail(authorEmail);
-//    comment.setBody(body);
-//    comment.setCreatedAt(LocalDateTime.now());
-//    return issueCommentRepository.save(comment);
-//}
-
     @Transactional
     @Override
-    public IssueDTO updateStatus(Long id, IssueStatus status,String assignedEmail) {
-        Issue issue = issueRepository.findById(id).orElseThrow(() -> new RuntimeException("Issue not found "));
+    public IssueDTO updateStatus(Long id, IssueStatus toStatus,String assignedEmail) {
+        Issue issue = issueRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Issue not found "));
+
         IssueStatus newStatus = IssueStatus.valueOf(assignedEmail);// OR  IssueStatus newStatus = IssueStatus.valueOf("DONE");
         issue.setIssueStatus(newStatus);
         issue.setUpdatedAt(LocalDateTime.now());
+        IssueStatus fromStatus = issue.getIssueStatus();
+        Long workFlowId = issue.getWrkFlowId();
+        if(workFlowId==null){
+           throw new RuntimeException("workFlow not assigned to issue");
+        }
+
+        Set<Role> userRole=userClient.getRole(assignedEmail);
+
+        workFlowService.isTransactionAllowed(workFlowId,fromStatus,fromStatus,userRole);
+        issue.setIssueStatus(toStatus);
+
         issueRepository.save(issue);
+        addComment(id,assignedEmail,"status changed from"+fromStatus+"->"+toStatus);
         return toDTO(issue);
     }
     @Transactional
@@ -181,7 +185,7 @@ public class IssueServiceImpl implements IssueService {
        }
        if (filter.containsKey("status")){
            IssueStatus status = IssueStatus.valueOf(filter.get("status").toUpperCase());
-           return issueRepository.findByIssueStatus(filter.get("status"))
+           return issueRepository.findByIssueStatus(status)
                    .stream()
                    .map(this::toDTO)
                    .collect(Collectors.toList());

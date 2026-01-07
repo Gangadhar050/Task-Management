@@ -29,7 +29,7 @@ public class WorkFlowController {
        return ResponseEntity.ok(workFlowService.getAllWorkFlow());
     }
 
-    @GetMapping("/name")
+    @GetMapping("/{name}")
     public ResponseEntity<WorkFlow>getWorkFlow(@PathVariable String name){
         return ResponseEntity.ok(workFlowService.getWorkFlow(name));
     }

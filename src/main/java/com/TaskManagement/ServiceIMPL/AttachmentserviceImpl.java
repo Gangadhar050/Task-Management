@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class AttachmentserviceImpl implements AttachmentService {
+public class  AttachmentserviceImpl implements AttachmentService {
     @Autowired
     private CloudinaryStorageServiceImpl storageService;
 

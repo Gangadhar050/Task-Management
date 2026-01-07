@@ -1,5 +1,6 @@
 package com.TaskManagement.Entity;
 
+import com.TaskManagement.Enum.IssueStatus;
 import com.TaskManagement.Enum.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,14 +20,16 @@ public class WorkFlowTranscation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String fromStatus;
-    private String toStatus;
+    private IssueStatus fromStatus;
+    private IssueStatus toStatus;
     private String actionName;
+
     private Role roles;
 
     @ManyToOne
     @JoinColumn(name="workFlow_id")
     private WorkFlow workFlow;
+
 
 
 }

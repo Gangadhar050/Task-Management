@@ -20,3 +20,4 @@ public class TaskManagementApplication {
         return new BCryptPasswordEncoder();
     }
 }
+

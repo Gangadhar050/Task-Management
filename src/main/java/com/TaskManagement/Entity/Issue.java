@@ -49,26 +49,29 @@ public class Issue {
 
     private Long epicId;
     private Long sprintId;
+    private Long projectId;
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
     private LocalDateTime dueDate;
 
+    private Long wrkFlowId;
+
     // Many-to-Many relationship between Issue and Label Entity
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "issue_labels",
+    @JoinTable(name = "issue_labels",
             joinColumns = @JoinColumn(name = "issue_id"),
-            inverseJoinColumns = @JoinColumn(name = "label_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<Label> labels = new HashSet<>();
 
     // Self-referencing relationship for linked issues
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_issue_id", nullable = true)
-    private Issue sourceIssueId; // Parent issue
+    private Issue sourceIssue; // Parent issue
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_issue_id", nullable = true)
     private Issue targetIssueId; // Related issue
+
+    private  Integer backlogPosition;
 }
